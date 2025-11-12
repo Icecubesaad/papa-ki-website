@@ -65,8 +65,8 @@ const AdminUploadPage: React.FC = () => {
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      if (file.size > 500 * 1024 * 1024) { // 500MB limit
-        toast.error('Video file size must be less than 500MB')
+      if (file.size > 4 * 1024 * 1024) { // 4MB limit for Vercel compatibility
+        toast.error('Video file size must be less than 4MB for web upload. For larger files, use direct Cloudinary upload.')
         return
       }
       setVideoFile(file)
@@ -163,23 +163,39 @@ const AdminUploadPage: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Video Upload */}
-          <div className="card p-6">
+          <div className="card p-6 border-l-4 border-l-blue-500">
             <h2 className="text-xl font-semibold text-metal-100 mb-4 flex items-center">
-              <Video className="h-5 w-5 mr-2" />
+              <Video className="h-5 w-5 mr-2 text-blue-500" />
               Video File
+              <span className="ml-2 text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded">Required</span>
             </h2>
             
             {!videoFile ? (
-              <div className="border-2 border-dashed border-metal-700 rounded-lg p-8 text-center">
-                <Upload className="h-12 w-12 text-metal-500 mx-auto mb-4" />
-                <p className="text-metal-300 mb-2">Click to upload or drag and drop</p>
-                <p className="text-metal-500 text-sm">MP4, WebM or AVI (max 500MB)</p>
-                <input
-                  type="file"
-                  accept="video/*"
-                  onChange={handleVideoChange}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
+              <div className="space-y-4">
+                <div className="relative border-2 border-dashed border-metal-700 rounded-lg p-8 text-center hover:border-metal-600 transition-colors">
+                  <Upload className="h-12 w-12 text-metal-500 mx-auto mb-4" />
+                  <p className="text-metal-300 mb-2">Click anywhere to upload video</p>
+                  <p className="text-metal-500 text-sm">MP4, WebM or AVI (max 4MB)</p>
+                  <p className="text-yellow-400 text-xs mt-1">⚠️ For larger videos, contact admin for direct upload</p>
+                  <input
+                    type="file"
+                    accept="video/*"
+                    onChange={handleVideoChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                </div>
+                <div className="text-center">
+                  <label className="btn btn-outline btn-sm cursor-pointer">
+                    <Video className="h-4 w-4 mr-2" />
+                    Choose Video File
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={handleVideoChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
               </div>
             ) : (
               <div className="space-y-4">
@@ -214,23 +230,38 @@ const AdminUploadPage: React.FC = () => {
           </div>
 
           {/* Thumbnail Upload */}
-          <div className="card p-6">
+          <div className="card p-6 border-l-4 border-l-green-500">
             <h2 className="text-xl font-semibold text-metal-100 mb-4 flex items-center">
-              <ImageIcon className="h-5 w-5 mr-2" />
+              <ImageIcon className="h-5 w-5 mr-2 text-green-500" />
               Thumbnail (Optional)
+              <span className="ml-2 text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded">Optional</span>
             </h2>
             
             {!thumbnailFile ? (
-              <div className="border-2 border-dashed border-metal-700 rounded-lg p-8 text-center">
-                <ImageIcon className="h-12 w-12 text-metal-500 mx-auto mb-4" />
-                <p className="text-metal-300 mb-2">Upload custom thumbnail</p>
-                <p className="text-metal-500 text-sm">JPG, PNG or WebP (max 10MB)</p>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleThumbnailChange}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
+              <div className="space-y-4">
+                <div className="relative border-2 border-dashed border-metal-700 rounded-lg p-8 text-center hover:border-metal-600 transition-colors">
+                  <ImageIcon className="h-12 w-12 text-metal-500 mx-auto mb-4" />
+                  <p className="text-metal-300 mb-2">Click anywhere to upload thumbnail</p>
+                  <p className="text-metal-500 text-sm">JPG, PNG or WebP (max 10MB)</p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleThumbnailChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                </div>
+                <div className="text-center">
+                  <label className="btn btn-outline btn-sm cursor-pointer">
+                    <ImageIcon className="h-4 w-4 mr-2" />
+                    Choose Thumbnail Image
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleThumbnailChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
               </div>
             ) : (
               <div className="space-y-4">
