@@ -154,10 +154,45 @@ const AdminUploadPage: React.FC = () => {
     try {
       setUploading(true)
       
+      let thumbnailUrl = null
+      
+      // Upload thumbnail if provided
+      if (thumbnailFile) {
+        try {
+          const thumbnailFormData = new FormData()
+          thumbnailFormData.append('file', thumbnailFile)
+          
+          // Get signature for thumbnail upload
+          const thumbnailSignature = await api.post('/upload/signature', {
+            resource_type: 'image'
+          })
+          
+          thumbnailFormData.append('signature', thumbnailSignature.data.signature)
+          thumbnailFormData.append('timestamp', thumbnailSignature.data.timestamp.toString())
+          thumbnailFormData.append('api_key', thumbnailSignature.data.api_key)
+          thumbnailFormData.append('folder', thumbnailSignature.data.folder)
+          
+          // Upload to Cloudinary
+          const thumbnailResponse = await fetch(thumbnailSignature.data.upload_url, {
+            method: 'POST',
+            body: thumbnailFormData
+          })
+          
+          if (thumbnailResponse.ok) {
+            const thumbnailResult = await thumbnailResponse.json()
+            thumbnailUrl = thumbnailResult.secure_url
+          }
+        } catch (error) {
+          console.error('Thumbnail upload failed:', error)
+          toast.error('Thumbnail upload failed, but video will be saved')
+        }
+      }
+      
       // Create video record with Cloudinary result
       await api.post('/upload/create-video', {
         public_id: result.public_id,
         secure_url: result.secure_url,
+        thumbnail_url: thumbnailUrl,
         title: formData.title,
         description: formData.description,
         categoryId: formData.categoryId,
@@ -247,6 +282,16 @@ const AdminUploadPage: React.FC = () => {
               onUploadComplete={handleLargeFileComplete}
               onCancel={() => setUploadMode('standard')}
               maxSize={100}
+              onThumbnailChange={(file) => {
+                setThumbnailFile(file)
+                if (file) {
+                  const url = URL.createObjectURL(file)
+                  setThumbnailPreview(url)
+                } else {
+                  setThumbnailPreview('')
+                }
+              }}
+              thumbnailFile={thumbnailFile}
             />
           ) : (
             <form onSubmit={handleStandardSubmit} className="space-y-6">
