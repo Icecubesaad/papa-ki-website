@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
-import { videoAPI, categoryAPI } from '@/lib/api'
+import LargeFileUpload from '@/components/upload/LargeFileUpload'
+import { videoAPI, categoryAPI, api } from '@/lib/api'
 import { 
   Upload, 
   Video, 
@@ -12,7 +13,8 @@ import {
   X, 
   ArrowLeft,
   Save,
-  Eye
+  Eye,
+  Zap
 } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -39,6 +41,8 @@ const AdminUploadPage: React.FC = () => {
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
   const [videoPreview, setVideoPreview] = useState<string>('')
   const [thumbnailPreview, setThumbnailPreview] = useState<string>('')
+  const [uploadMode, setUploadMode] = useState<'standard' | 'large'>('standard')
+  const [cloudinaryResult, setCloudinaryResult] = useState<any>(null)
 
   useEffect(() => {
     fetchCategories()
@@ -88,7 +92,7 @@ const AdminUploadPage: React.FC = () => {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleStandardSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!videoFile) {
@@ -134,6 +138,48 @@ const AdminUploadPage: React.FC = () => {
     }
   }
 
+  const handleLargeFileComplete = async (result: any) => {
+    setCloudinaryResult(result)
+    
+    if (!formData.title.trim()) {
+      toast.error('Please enter a title before completing upload')
+      return
+    }
+
+    if (!formData.categoryId) {
+      toast.error('Please select a category before completing upload')
+      return
+    }
+
+    try {
+      setUploading(true)
+      
+      // Create video record with Cloudinary result
+      await api.post('/upload/create-video', {
+        public_id: result.public_id,
+        secure_url: result.secure_url,
+        title: formData.title,
+        description: formData.description,
+        categoryId: formData.categoryId,
+        tags: formData.tags,
+        isPublished: formData.isPublished,
+        duration: result.duration,
+        bytes: result.bytes,
+        width: result.width,
+        height: result.height
+      })
+      
+      toast.success('Large video uploaded successfully!')
+      router.push('/admin/videos')
+    } catch (error: any) {
+      console.error('Create video error:', error)
+      const message = error.response?.data?.error || 'Failed to create video record'
+      toast.error(message)
+    } finally {
+      setUploading(false)
+    }
+  }
+
   const clearVideo = () => {
     setVideoFile(null)
     setVideoPreview('')
@@ -161,7 +207,49 @@ const AdminUploadPage: React.FC = () => {
           <p className="text-metal-400 mt-2">Add new content to nature goes metal</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="space-y-8">
+          {/* Upload Mode Selection */}
+          <div className="card p-6">
+            <h2 className="text-xl font-semibold text-metal-100 mb-4">Choose Upload Method</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <button
+                type="button"
+                onClick={() => setUploadMode('standard')}
+                className={`p-4 rounded-lg border-2 transition-all ${
+                  uploadMode === 'standard'
+                    ? 'border-blue-500 bg-blue-500/10'
+                    : 'border-metal-700 hover:border-metal-600'
+                }`}
+              >
+                <Upload className="h-8 w-8 text-blue-500 mx-auto mb-2" />
+                <h3 className="font-medium text-metal-100">Standard Upload</h3>
+                <p className="text-sm text-metal-400 mt-1">Files up to 4MB</p>
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => setUploadMode('large')}
+                className={`p-4 rounded-lg border-2 transition-all ${
+                  uploadMode === 'large'
+                    ? 'border-purple-500 bg-purple-500/10'
+                    : 'border-metal-700 hover:border-metal-600'
+                }`}
+              >
+                <Zap className="h-8 w-8 text-purple-500 mx-auto mb-2" />
+                <h3 className="font-medium text-metal-100">Large File Upload</h3>
+                <p className="text-sm text-metal-400 mt-1">Files up to 100MB</p>
+              </button>
+            </div>
+          </div>
+
+          {uploadMode === 'large' ? (
+            <LargeFileUpload
+              onUploadComplete={handleLargeFileComplete}
+              onCancel={() => setUploadMode('standard')}
+              maxSize={100}
+            />
+          ) : (
+            <form onSubmit={handleStandardSubmit} className="space-y-6">
           {/* Video Upload */}
           <div className="card p-6 border-l-4 border-l-blue-500">
             <h2 className="text-xl font-semibold text-metal-100 mb-4 flex items-center">
@@ -409,6 +497,97 @@ const AdminUploadPage: React.FC = () => {
             </button>
           </div>
         </form>
+          )}
+
+          {/* Video Details Form - Always Show for Large Uploads */}
+          {uploadMode === 'large' && (
+            <div className="card p-6">
+              <h2 className="text-xl font-semibold text-metal-100 mb-4">Video Details</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label htmlFor="title" className="block text-sm font-medium text-metal-300 mb-2">
+                    Title *
+                  </label>
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    className="input"
+                    placeholder="Enter video title"
+                    required
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label htmlFor="description" className="block text-sm font-medium text-metal-300 mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows={4}
+                    className="textarea"
+                    placeholder="Enter video description"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="categoryId" className="block text-sm font-medium text-metal-300 mb-2">
+                    Category *
+                  </label>
+                  <select
+                    id="categoryId"
+                    name="categoryId"
+                    value={formData.categoryId}
+                    onChange={handleInputChange}
+                    className="select"
+                    required
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="tags" className="block text-sm font-medium text-metal-300 mb-2">
+                    Tags
+                  </label>
+                  <input
+                    type="text"
+                    id="tags"
+                    name="tags"
+                    value={formData.tags}
+                    onChange={handleInputChange}
+                    className="input"
+                    placeholder="nature, wildlife, predator (comma separated)"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="isPublished"
+                      checked={formData.isPublished}
+                      onChange={handleInputChange}
+                      className="rounded border-metal-700 bg-metal-900 text-primary-600 focus:ring-primary-500 focus:ring-offset-metal-950"
+                    />
+                    <span className="ml-2 text-metal-300">Publish immediately</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
