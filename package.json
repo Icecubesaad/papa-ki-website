@@ -5,8 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:debug": "NEXT_DEBUG=1 next build",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "rm -rf .next node_modules/.cache"
   },
   "dependencies": {
     "next": "14.0.0",
@@ -25,7 +28,7 @@
     "react-player": "^2.13.0",
     "framer-motion": "^10.16.16",
     "react-intersection-observer": "^9.5.3",
-    "sharp": "^0.33.1"
+    "sharp": "^0.33.5"
   },
   "devDependencies": {
     "typescript": "^5",
