@@ -63,7 +63,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 <Video className="h-6 w-6 text-white" />
               </div>
               <div className="ml-3">
-                <h1 className="text-lg font-bold text-metal-100">Nature is Metal</h1>
+                <h1 className="text-lg font-bold text-metal-100">nature goes metal</h1>
                 <p className="text-xs text-metal-400">Admin Panel</p>
               </div>
             </div>

@@ -158,7 +158,7 @@ const AdminUploadPage: React.FC = () => {
             Back to Dashboard
           </Link>
           <h1 className="text-3xl font-bold text-metal-100">Upload Video</h1>
-          <p className="text-metal-400 mt-2">Add new content to Nature is Metal</p>
+          <p className="text-metal-400 mt-2">Add new content to nature goes metal</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">

@@ -9,21 +9,21 @@ import Footer from '@/components/layout/Footer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Nature is Metal - Witness the Raw Power of Nature',
+  title: 'nature goes metal - Witness the Raw Power of Nature',
   description: 'Witness the raw power and beauty of nature in stunning videos',
-  keywords: 'nature, wildlife, predators, survival, documentary, nature is metal',
-  authors: [{ name: 'Nature is Metal Team' }],
+  keywords: 'nature, wildlife, predators, survival, documentary, nature goes metal',
+  authors: [{ name: 'nature goes metal Team' }],
   viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
   openGraph: {
-    title: 'Nature is Metal - Witness the Raw Power of Nature',
+    title: 'nature goes metal - Witness the Raw Power of Nature',
     description: 'Witness the raw power and beauty of nature in stunning videos',
     type: 'website',
     locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Nature is Metal - Witness the Raw Power of Nature',
+    title: 'nature goes metal - Witness the Raw Power of Nature',
     description: 'Witness the raw power and beauty of nature in stunning videos',
   }
 }

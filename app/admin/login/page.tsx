@@ -63,7 +63,7 @@ const AdminLoginPage: React.FC = () => {
           Admin Login
         </h2>
         <p className="mt-2 text-center text-sm text-metal-400">
-          Sign in to manage Nature is Metal
+          Sign in to manage nature goes metal
         </p>
       </div>
 

@@ -18,7 +18,7 @@ const Footer: React.FC = () => {
               <div className="p-2 bg-gradient-to-r from-primary-600 to-nature-600 rounded-lg shadow-lg">
                 <Video className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold">Nature is Metal</span>
+              <span className="text-xl font-bold">nature goes metal</span>
             </Link>
             <p className="text-metal-400 mb-6 max-w-md">
               Witness the raw power and beauty of nature in its most intense moments. 
@@ -91,7 +91,7 @@ const Footer: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-1 text-metal-400">
-              <span>&copy; {currentYear} Nature is Metal. Made with</span>
+              <span>&copy; {currentYear} nature goes metal. Made with</span>
               <Heart className="h-4 w-4 text-nature-500" />
               <span>for nature enthusiasts.</span>
             </div>

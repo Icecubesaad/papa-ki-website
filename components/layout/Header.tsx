@@ -33,7 +33,7 @@ const Header: React.FC = () => {
               <Video className="h-6 w-6 text-black" />
             </div>
             <span className="text-xl font-bold text-white hidden sm:block">
-              Nature is Metal
+              nature goes metal
             </span>
           </Link>
 
