@@ -1,12 +1,9 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider } from '@/contexts/AuthContext'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'nature goes metal - Witness the Raw Power of Nature',
@@ -42,9 +39,11 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <head>
         <link rel="icon" href="/favicon.ico" />
-        <meta name="theme-color" content="#1f5f1f" />
+        <meta name="theme-color" content="#000000" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${inter.className} h-full flex flex-col`}>
+      <body className="h-full flex flex-col font-sans">
         <AuthProvider>
           <Header />
           <main className="flex-1">

@@ -21,6 +21,8 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react']
   },
+  // Disable font optimization to avoid Google Fonts issues
+  optimizeFonts: false,
   // Minimal webpack configuration
   webpack: (config, { isServer }) => {
     // Handle sharp properly for Vercel
