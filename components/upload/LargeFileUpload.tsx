@@ -298,67 +298,6 @@ const LargeFileUpload: React.FC<LargeFileUploadProps> = ({
             </div>
           )}
 
-          {/* Thumbnail Upload */}
-          {onThumbnailChange && (
-            <div className="border-t border-metal-700 pt-4">
-              <h3 className="text-lg font-medium text-metal-100 mb-3 flex items-center">
-                <ImageIcon className="h-4 w-4 mr-2 text-green-500" />
-                Thumbnail (Optional)
-              </h3>
-              
-              {!thumbnailFile ? (
-                <div className="relative border-2 border-dashed border-metal-700 rounded-lg p-6 text-center hover:border-metal-600 transition-colors">
-                  <ImageIcon className="h-8 w-8 text-metal-500 mx-auto mb-2" />
-                  <p className="text-metal-300 text-sm mb-1">Upload custom thumbnail</p>
-                  <p className="text-metal-500 text-xs">JPG, PNG or WebP (max 10MB)</p>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0]
-                      if (file) {
-                        if (file.size > 10 * 1024 * 1024) {
-                          toast.error('Thumbnail file size must be less than 10MB')
-                          return
-                        }
-                        onThumbnailChange(file)
-                      }
-                    }}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                  />
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between bg-metal-800 p-3 rounded-lg">
-                    <div className="flex items-center">
-                      <ImageIcon className="h-6 w-6 text-green-500 mr-2" />
-                      <div>
-                        <p className="text-metal-100 text-sm font-medium">{thumbnailFile.name}</p>
-                        <p className="text-metal-400 text-xs">
-                          {(thumbnailFile.size / (1024 * 1024)).toFixed(2)} MB
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => onThumbnailChange(null)}
-                      className="text-red-400 hover:text-red-300"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                  
-                  {/* Thumbnail Preview */}
-                  <img
-                    src={URL.createObjectURL(thumbnailFile)}
-                    alt="Thumbnail preview"
-                    className="w-full max-w-xs rounded-lg mx-auto"
-                  />
-                </div>
-              )}
-            </div>
-          )}
-
           {/* Actions */}
           <div className="flex justify-end space-x-3">
             <button
@@ -378,6 +317,67 @@ const LargeFileUpload: React.FC<LargeFileUploadProps> = ({
               </button>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Thumbnail Upload - Always visible when callback is provided */}
+      {onThumbnailChange && (
+        <div className="border-t border-metal-700 pt-4 mt-4">
+          <h3 className="text-lg font-medium text-metal-100 mb-3 flex items-center">
+            <ImageIcon className="h-4 w-4 mr-2 text-green-500" />
+            Thumbnail (Optional)
+          </h3>
+          
+          {!thumbnailFile ? (
+            <div className="relative border-2 border-dashed border-metal-700 rounded-lg p-6 text-center hover:border-metal-600 transition-colors">
+              <ImageIcon className="h-8 w-8 text-metal-500 mx-auto mb-2" />
+              <p className="text-metal-300 text-sm mb-1">Upload custom thumbnail</p>
+              <p className="text-metal-500 text-xs">JPG, PNG or WebP (max 10MB)</p>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    if (file.size > 10 * 1024 * 1024) {
+                      toast.error('Thumbnail file size must be less than 10MB')
+                      return
+                    }
+                    onThumbnailChange(file)
+                  }
+                }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+              />
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between bg-metal-800 p-3 rounded-lg">
+                <div className="flex items-center">
+                  <ImageIcon className="h-6 w-6 text-green-500 mr-2" />
+                  <div>
+                    <p className="text-metal-100 text-sm font-medium">{thumbnailFile.name}</p>
+                    <p className="text-metal-400 text-xs">
+                      {(thumbnailFile.size / (1024 * 1024)).toFixed(2)} MB
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onThumbnailChange(null)}
+                  className="text-red-400 hover:text-red-300"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              
+              {/* Thumbnail Preview */}
+              <img
+                src={URL.createObjectURL(thumbnailFile)}
+                alt="Thumbnail preview"
+                className="w-full max-w-xs rounded-lg mx-auto"
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
