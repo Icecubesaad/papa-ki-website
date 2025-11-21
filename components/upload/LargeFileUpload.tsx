@@ -79,29 +79,26 @@ const LargeFileUpload: React.FC<LargeFileUploadProps> = ({
       })
 
       const {
-        signature,
-        timestamp,
-        api_key,
-        cloud_name,
         upload_url,
-        folder,
-        chunk_size
+        cloud_name,
+        ...params
       } = signatureResponse.data
 
       // Create form data for Cloudinary
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('signature', signature)
-      formData.append('timestamp', timestamp.toString())
-      formData.append('api_key', api_key)
-      formData.append('folder', folder)
+
+      // Append all parameters returned by the backend (signature, timestamp, api_key, and all signed params)
+      Object.keys(params).forEach(key => {
+        formData.append(key, params[key])
+      })
 
       // Create abort controller for cancellation
       abortControllerRef.current = new AbortController()
 
       // Upload directly to Cloudinary with progress tracking
       const xhr = new XMLHttpRequest()
-      
+
       return new Promise((resolve, reject) => {
         xhr.upload.addEventListener('progress', (e) => {
           if (e.lengthComputable) {
@@ -150,10 +147,10 @@ const LargeFileUpload: React.FC<LargeFileUploadProps> = ({
       const cloudinaryResult = await uploadToCloudinary()
       setUploadStatus('completed')
       setProgress(100)
-      
+
       toast.success('Video uploaded successfully!')
       onUploadComplete(cloudinaryResult)
-      
+
     } catch (error: any) {
       if (error.message !== 'Upload cancelled') {
         setError(error.message || 'Upload failed')
@@ -327,7 +324,7 @@ const LargeFileUpload: React.FC<LargeFileUploadProps> = ({
             <ImageIcon className="h-4 w-4 mr-2 text-green-500" />
             Thumbnail (Optional)
           </h3>
-          
+
           {!thumbnailFile ? (
             <div className="relative border-2 border-dashed border-metal-700 rounded-lg p-6 text-center hover:border-metal-600 transition-colors">
               <ImageIcon className="h-8 w-8 text-metal-500 mx-auto mb-2" />
@@ -369,7 +366,7 @@ const LargeFileUpload: React.FC<LargeFileUploadProps> = ({
                   <X className="h-4 w-4" />
                 </button>
               </div>
-              
+
               {/* Thumbnail Preview */}
               <img
                 src={URL.createObjectURL(thumbnailFile)}
