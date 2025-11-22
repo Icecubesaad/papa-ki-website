@@ -168,18 +168,14 @@ const AdminUploadPage: React.FC = () => {
           })
 
           const {
-            upload_url,
-            cloud_name,
-            ...params
+            upload_url
           } = thumbnailSignature.data
 
-          // Append all parameters returned by the backend
-          Object.keys(params).forEach(key => {
-            thumbnailFormData.append(key, params[key])
-          })
+          // Use Unsigned Upload for thumbnail
+          thumbnailFormData.append('upload_preset', 'papa-ki-website')
 
           // Upload to Cloudinary
-          const thumbnailResponse = await fetch(thumbnailSignature.data.upload_url, {
+          const thumbnailResponse = await fetch(upload_url, {
             method: 'POST',
             body: thumbnailFormData
           })
@@ -257,8 +253,8 @@ const AdminUploadPage: React.FC = () => {
                 type="button"
                 onClick={() => setUploadMode('standard')}
                 className={`p-4 rounded-lg border-2 transition-all ${uploadMode === 'standard'
-                    ? 'border-blue-500 bg-blue-500/10'
-                    : 'border-metal-700 hover:border-metal-600'
+                  ? 'border-blue-500 bg-blue-500/10'
+                  : 'border-metal-700 hover:border-metal-600'
                   }`}
               >
                 <Upload className="h-8 w-8 text-blue-500 mx-auto mb-2" />
@@ -270,8 +266,8 @@ const AdminUploadPage: React.FC = () => {
                 type="button"
                 onClick={() => setUploadMode('large')}
                 className={`p-4 rounded-lg border-2 transition-all ${uploadMode === 'large'
-                    ? 'border-purple-500 bg-purple-500/10'
-                    : 'border-metal-700 hover:border-metal-600'
+                  ? 'border-purple-500 bg-purple-500/10'
+                  : 'border-metal-700 hover:border-metal-600'
                   }`}
               >
                 <Zap className="h-8 w-8 text-purple-500 mx-auto mb-2" />

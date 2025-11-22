@@ -80,18 +80,14 @@ const LargeFileUpload: React.FC<LargeFileUploadProps> = ({
 
       const {
         upload_url,
-        cloud_name,
-        ...params
+        cloud_name
       } = signatureResponse.data
 
-      // Create form data for Cloudinary
+      // Create form data for Cloudinary Unsigned Upload
       const formData = new FormData()
       formData.append('file', file)
-
-      // Append all parameters returned by the backend (signature, timestamp, api_key, and all signed params)
-      Object.keys(params).forEach(key => {
-        formData.append(key, params[key])
-      })
+      formData.append('upload_preset', 'papa-ki-website')
+      // formData.append('folder', 'papa-ki-website/videos') // Preset already handles folder, but we can force it if needed. Let's rely on preset.
 
       // Create abort controller for cancellation
       abortControllerRef.current = new AbortController()
